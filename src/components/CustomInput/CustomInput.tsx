@@ -1,4 +1,4 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native'
+import {View, Text, TextInput, StyleSheet, Keyboard} from 'react-native'
 import React, {FC} from 'react'
 import {CustomInputProps} from '../../types';
 
@@ -20,11 +20,12 @@ const CustomInput: FC<CustomInputProps> = ({
         value={value}
         onChangeText={onChahge}
         placeholder={placeholder}
-        multiline 
+        multiline
         numberOfLines={numberOfLines}
         maxLength={maxLength}
         onFocus={onFocus}
         keyboardType={keyboardType}
+        autoCorrect={false}
         style={styles.field} />
     </View>
   )
