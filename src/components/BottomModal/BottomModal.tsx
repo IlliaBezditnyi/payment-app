@@ -8,7 +8,6 @@ const BottomModal: FC<BottomModalProps> = ({snapPoint, onCloseModal, children}) 
 
   return (
     <BottomSheet
-      ref={sheetRef}
       snapPoints={snapPoint}
       enablePanDownToClose={true}
       onClose={onCloseModal}
