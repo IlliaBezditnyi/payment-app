@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
-import { NavigationContainer } from "@react-navigation/native";
+import React, {FC} from 'react';
+import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddAmountScreen from '../screens/AddAmountScreen';
 import CardDetailsScreen from '../screens/CardDetailsScreen';
+import MerchantKeyChange from "../screens/MerchantKeyChange";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ const Navigation: FC = () => {
           name="CardDetails"
           component={CardDetailsScreen}
           options={{title: 'Card Details', headerTitleStyle: {fontSize: 16, fontWeight: "500"}}}
+        />
+        <Stack.Screen
+          name="MerchantKeyChange"
+          component={MerchantKeyChange}
+          options={{title: 'Merchant key change', headerTitleStyle: {fontSize: 16, fontWeight: "500"}}}
         />
       </Stack.Navigator>
     </NavigationContainer>
