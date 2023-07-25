@@ -59,7 +59,9 @@ const CardDetailsScreen: FC = () => {
                 placeholder='0000 0000 0000 0000'
                 keyboardType='numeric'
                 control={control}
-                rules={{required: 'Card number is required'}}
+                rules={{
+                  required: 'Card number is required',
+                  validate: (value: any) => value.length === 19 ? true : "Card number requires 16 digits"}}
                 maxLength={19}
                 formatter={cardNumberFormatter}
               />
