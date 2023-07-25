@@ -3,7 +3,8 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddAmountScreen from '../screens/AddAmountScreen';
 import CardDetailsScreen from '../screens/CardDetailsScreen';
-import MerchantKeyChange from "../screens/MerchantKeyChange";
+import MerchantKeyChange from '../screens/MerchantKeyChange';
+import StartMenuScreen from '../screens/StartMenuScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,11 @@ const Navigation: FC = () => {
         headerStyle: { backgroundColor: '#f7f6f2'},
         headerShadowVisible: false
       }}>
+        <Stack.Screen
+          name="StartMenu"
+          component={StartMenuScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="AddAmount"
           component={AddAmountScreen}
