@@ -1,48 +1,65 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native'
-import React, {FC} from 'react'
+import {View, TextInput, StyleSheet, Text} from 'react-native';
+import React, {FC} from 'react';
+import {Controller} from 'react-hook-form';
 import {CustomInputProps} from '../../types';
 
 const CustomInput: FC<CustomInputProps> = ({
-  value,
-  onChahge,
-  inputName,
-  onFocus,
-  multiline,
-  numberOfLines,
+  control,
+  name,
+  rules = {},
   placeholder,
+  keyboardType,
+  formatter,
   maxLength,
-  keyboardType
+  multiline,
+  numberOfLines
 }) => {
   return (
-    <View>
-      <Text style={styles.label}>{inputName}</Text>
-      <TextInput
-        value={value}
-        onChangeText={onChahge}
-        placeholder={placeholder}
-        multiline 
-        numberOfLines={numberOfLines}
-        maxLength={maxLength}
-        onFocus={onFocus}
-        keyboardType={keyboardType}
-        style={styles.field} />
-    </View>
-  )
-}
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({field: {value, onChange, onBlur}, fieldState: {error}}) => (
+        <>
+          <View
+            style={[
+              styles.container,
+              {borderColor: error ? 'red' : '#fff'},
+            ]}>
+            <TextInput
+              value={value}
+              onChangeText={(text) => {
+                const formatted = formatter ? formatter(value, text) : text
+                onChange(formatted)
+              }}
+              onBlur={onBlur}
+              placeholder={placeholder}
+              keyboardType={keyboardType}
+              maxLength={maxLength}
+              multiline={multiline}
+              numberOfLines={numberOfLines}
+            />
+          </View>
+          {error && (
+            <Text style={styles.error}>{error.message || 'Error'}</Text>
+          )}
+        </>
+      )}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
-  label: {
-    marginBottom: 5,
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#000'
-  },
-  field: {
-    textAlignVertical: 'center',
+  container: {
+    width: '100%',
     backgroundColor: '#fff',
     borderRadius: 8,
     borderStyle: 'solid',
     paddingHorizontal: 20,
+  },
+  error: {
+    color: 'red',
+    alignSelf: 'stretch',
   },
 });
 

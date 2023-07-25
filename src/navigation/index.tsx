@@ -21,7 +21,8 @@ const Navigation: FC = () => {
         <Stack.Screen
           name="CardDetails"
           component={CardDetailsScreen}
-          options={{title: 'Card Details', headerTitleStyle: {fontSize: 16, fontWeight: "500"}}} />
+          options={{title: 'Card Details', headerTitleStyle: {fontSize: 16, fontWeight: "500"}}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

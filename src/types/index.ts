@@ -1,24 +1,18 @@
 export interface CustomButtonProps {
   title: string;
-  onPress: (event: any) => void;
+  onPress: any;
 }
 
 export interface CustomInputProps {
-  inputName: string;
-  placeholder: string;
-  value: any;
-  onChahge: any;
-  onFocus?: () => void;
+  control: any;
+  name: string;
+  rules: object;
+  placeholder?: string;
   keyboardType?: any;
+  formatter?: (oldValue: string, newValue: string) => string;
+  maxLength?: any;
   multiline?: boolean;
   numberOfLines?: number;
-  maxLength?: number;
-}
-
-export interface AmountInputProps {
-  value: number;
-  onChange: any;
-  inputName: string;
 }
 
 export interface SelectButtonProps {
