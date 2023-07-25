@@ -1,123 +1,139 @@
-import React, {FC, useState, useCallback} from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, {FC, useState, useCallback, useRef} from 'react';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import BottomModal from '../../components/BottomModal/BottomModal';
 import ConfirmTransferContent from '../../components/ConfirmTransferContent';
 import PaymentStatusContent from '../../components/PaymentStatusContent';
-import {useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../../navigation/types';
-import {StackNavigationProp} from '@react-navigation/stack';
+import {useForm} from 'react-hook-form';
+import {
+  cardNumberFormatter,
+  expirationDateFormatter,
+} from '../../utils/formatters';
 
 const CardDetailsScreen: FC = () => {
-  const [cardNumber, setCardNumber] = useState<number>();
-  const [expiryDate, setExpiryDate] = useState<number>();
-  const [securityCode, setSecurityCode] = useState<number>();
-  const [cardholderName, setCardholderName] = useState<string>();
+  const {control, handleSubmit, formState, watch} = useForm({
+    defaultValues: {
+      cardNumber: '',
+      expiryDate: ''
+    },
+    mode: 'onChange'
+  });
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [isPaymentButtonPress, setIsPaymentButtonPress] = useState<boolean>(false);
-  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false);
+  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(true);
 
-  const {navigate} = useNavigation<StackNavigationProp<RootStackParamList>>();
-
-  const onContinueButtonPress = useCallback(() => {
+  const onContinueButtonPress = useCallback((data: any) => {
     setIsOpenModal(true);
   }, [])
 
   const onModalClose = useCallback(() => {
     setIsOpenModal(false);
+    setIsPaymentButtonPress(false);
   }, [])
 
   const onPaySubmit = () => {
-    onModalClose();
+    setIsOpenModal(false);
     setIsPaymentButtonPress(true);
-  }
-
-  const handleCardNumber = (number: any) => {
-    setCardNumber(number.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').substr(0, 20).trim());
-  }
-
-  const handleExpiryDate = (date: any) => {
-    setExpiryDate(date.replace(/\W/gi, '').replace(/(.{2})/g, '$1/').substring(0, 5));
   }
 
   const snapPointModal = ["55%"];
   const snapPointPayment = ["35"];
 
+  const cardNumberValue = watch("cardNumber");
+
   return (
-    <View style={{flex: 1}}>
-      <View style={
-        [styles.root, {opacity: isOpenModal ? 0.2 : 1, backgroundColor: isOpenModal ? 'grey' : '#f7f6f2' }]
-      }>
-        <View style={styles.inputs}>
-          <CustomInput
-            value={cardNumber}
-            onChahge={handleCardNumber}
-            inputName='Card Number'
-            placeholder='0000 0000 0000 0000'
-            keyboardType='numeric'
-          />
-          <View style={styles.container}>
-            <View style={{flex: 1}}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={{flex: 1}}>
+        <View style={
+          [styles.root, {opacity: isOpenModal || isPaymentButtonPress ? 0.1 : 1, backgroundColor: isOpenModal || isPaymentButtonPress ? 'grey' : '#f7f6f2' }]
+        }>
+          <View style={styles.inputs}>
+
+            <View style={styles.input}>
+              <Text style={styles.inputTitle}>Card number</Text>
               <CustomInput
-                value={expiryDate}
-                onChahge={handleExpiryDate}
-                inputName='Expiry date'
-                placeholder='MM\YY'
+                name="cardNumber"
+                placeholder='0000 0000 0000 0000'
                 keyboardType='numeric'
+                control={control}
+                rules={{required: 'Card number is required'}}
+                maxLength={19}
+                formatter={cardNumberFormatter}
               />
             </View>
-            <View style={{flex: 1}}>
+
+            <View style={styles.container}>
+              <View style={[styles.input, {flex: 1}]}>
+                <Text style={styles.inputTitle}>Expiry date</Text>
+                <CustomInput
+                  name="expiryDate"
+                  placeholder='MM\YY'
+                  keyboardType='numeric'
+                  control={control}
+                  rules={{required: 'Expiry date is required'}}
+                  maxLength={5}
+                  formatter={expirationDateFormatter}
+                />
+              </View>
+              <View style={[styles.input, {flex: 1}]}>
+                <Text style={styles.inputTitle}>Security code</Text>
+                <CustomInput
+                  name="securityCode"
+                  placeholder='CVC\CVV'
+                  keyboardType='numeric'
+                  control={control}
+                  rules={{required: 'Security code is required'}}
+                  maxLength={3}
+                />
+              </View>
+            </View>
+
+            <View style={styles.input}>
+              <Text style={styles.inputTitle}>Cardholder name</Text>
               <CustomInput
-                value={securityCode}
-                onChahge={setSecurityCode}
-                inputName='Security code'
-                placeholder='CVC\CVV'
-                keyboardType='numeric'
+                name="cardholderName"
+                placeholder='Enter cardholder full name'
+                control={control}
+                rules={{}}
               />
             </View>
           </View>
-          <CustomInput
-            value={cardholderName}
-            onChahge={setCardholderName}
-            inputName='Cardholder name'
-            placeholder='Enter cardholder full name'
-          />
+          <CustomButton title="Continue" onPress={handleSubmit(onContinueButtonPress)} />
         </View>
-        <CustomButton title="Continue" onPress={onContinueButtonPress} />
+
+        {isOpenModal &&
+          <BottomModal snapPoint={snapPointModal} onCloseModal={onModalClose}>
+            <View style={{paddingHorizontal: 15, paddingTop: 20}}>
+              <ConfirmTransferContent
+                card={cardNumberValue}
+                sum={250}
+                onCancelPress={onModalClose}
+                onPaySubmit={onPaySubmit}
+              />
+            </View>
+          </BottomModal>
+        }
+
+        {isPaymentButtonPress &&
+          <BottomModal snapPoint={snapPointPayment} onCloseModal={onModalClose}>
+            <View style={{paddingHorizontal: 15, paddingTop: 20}}>
+              <PaymentStatusContent
+                icon={paymentSuccess ?
+                  (
+                    require('../../../assets/images/money_modal_icon.png')
+                  ) :
+                    require('../../../assets/images/payment_failure_icon.png')
+                }
+                title={paymentSuccess ? 'The payment was successful' : 'The payment did not go through'}
+                description='It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
+              />
+            </View>
+          </BottomModal>
+        }
       </View>
-
-      {isOpenModal &&
-        <BottomModal snapPoint={snapPointModal} onCloseModal={onModalClose}>
-          <View style={{paddingHorizontal: 15, paddingTop: 20}}>
-            <ConfirmTransferContent
-              card={cardNumber}
-              sum={250}
-              onCancelPress={onModalClose}
-              onPaySubmit={onPaySubmit}
-            />
-          </View>
-        </BottomModal>
-      }
-
-      {isPaymentButtonPress &&
-        <BottomModal snapPoint={snapPointPayment} onCloseModal={onModalClose}>
-          <View style={{paddingHorizontal: 15, paddingTop: 20}}>
-            <PaymentStatusContent
-              icon={paymentSuccess ?
-                (
-                  require('../../../assets/images/money_modal_icon.png')
-                ) :
-                  require('../../../assets/images/payment_failure_icon.png')
-              }
-              title={paymentSuccess ? 'The payment was successful' : 'The payment did not go through'}
-              description='It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.'
-            />
-          </View>
-        </BottomModal>
-      }
-    </View>
+    </TouchableWithoutFeedback>
   )
 }
 
@@ -134,6 +150,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     gap: 10
+  },
+  input: {
+    gap: 5
+  },
+  inputTitle: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: '500'
   }
 })
 
