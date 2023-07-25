@@ -26,6 +26,7 @@ const CardDetailsScreen: FC = () => {
 
   const onContinueButtonPress = useCallback((data: any) => {
     setIsOpenModal(true);
+    Keyboard.dismiss()
   }, [])
 
   const onModalClose = useCallback(() => {

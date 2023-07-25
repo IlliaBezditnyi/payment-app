@@ -1,8 +1,7 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {Button, Image, Keyboard, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
+import {Image, Keyboard, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import CustomInput from "../../components/CustomInput";
-import SelectButton from "../../components/SelectButton/SelectButton";
-import Modal from "react-native-modal";
+import {useForm} from 'react-hook-form';
 import BottomSheet, {BottomSheetFlatList, BottomSheetScrollView, BottomSheetView} from "@gorhom/bottom-sheet";
 
 const MerchantKeyChange = () => {
@@ -11,37 +10,27 @@ const MerchantKeyChange = () => {
     const [keyValue, setKeyValue] = useState<string>(data[0])
     const [newKeyValue, setNewKeyValue] = useState<string>('')
 
-
-    const handleNewKeyChange = (text: string) => {
-        setNewKeyValue(text)
-        if (text) {
-            setKeyValue('')
-        }
-
-    }
     const keySelected = (item: string) => {
         setKeyValue(item)
         setNewKeyValue('')
         handleClosePress()
     }
 
-    const handleSubmit = () => {
-        newKeyValue ? console.log('manually key', newKeyValue) : console.log('key', keyValue)
-    }
-    const handleCancel = () => {
-        // Keyboard.dismiss()
-        console.log('cancel')
-    }
+    const {control, handleSubmit, formState} = useForm({
+        defaultValues: {
+            newKey: ''
+        },
+        mode: 'onChange'
+    });
 
 //---modal---
     const sheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ["70%", "70%", "70%"], []);
-    // const handleSheetChange = useCallback((index: any) => {
-    //     console.log("handleSheetChange", index);
-    // }, []);
+
     const handleSnapPress = useCallback((index: any) => {
         sheetRef.current?.snapToIndex(index);
         setIsOpenModal(true)
+        Keyboard.dismiss()
 
     }, []);
     const handleClosePress = useCallback(() => {
@@ -49,6 +38,14 @@ const MerchantKeyChange = () => {
         Keyboard.dismiss()
         setIsOpenModal(false)
     }, []);
+
+    const handlePressSubmit = () => {
+        control._formValues.newKey ? console.log('manually key', control._formValues.newKey) : console.log('key', keyValue)
+    }
+    const handleCancel = () => {
+        // Keyboard.dismiss()
+        console.log('cancel')
+    }
 
     return (
         <TouchableWithoutFeedback onPress={() => handleClosePress()}>
@@ -79,15 +76,21 @@ const MerchantKeyChange = () => {
                             </Pressable>
 
                         </View>
-                        <CustomInput
-                            value={newKeyValue}
-                            onChahge={(text: string) => handleNewKeyChange(text)}
-                            inputName='Manually enter a new key'
-                            placeholder=''
-                            multiline
-                            numberOfLines={3}
-                            maxLength={1000}
-                        />
+                        <View>
+                            <Text style={{fontSize: 16, color: '#000', fontWeight: '500', marginBottom: 5}}>
+                                Manually enter a new key
+                            </Text>
+
+                            <CustomInput
+                                name="newKey"
+                                placeholder=''
+                                control={control}
+                                rules={{}}
+                                maxLength={1000}
+                                multiline={true}
+                                numberOfLines={3}
+                            />
+                        </View>
                     </View>
 
                 </View>
@@ -99,7 +102,7 @@ const MerchantKeyChange = () => {
                             fontWeight: '500'
                         }}>Cancel</Text>
                     </Pressable>
-                    <Pressable style={styles.buttonSubmit} onPress={handleSubmit}>
+                    <Pressable style={styles.buttonSubmit} onPress={handleSubmit(handlePressSubmit)}>
                         <Text style={{
                             color: '#fff',
                             fontSize: 16,
@@ -181,7 +184,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         minHeight: 50,
         flexDirection: 'row',
-        // backgroundColor: 'red',
         marginBottom: 15
     },
 
