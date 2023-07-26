@@ -25,6 +25,7 @@ const AddAmountScreen: FC = () => {
 
   const onSelectButtonPress = useCallback(() => {
     setIsOpenModal(true);
+    Keyboard.dismiss()
   }, [])
 
   const onContinuePressed = () => {
