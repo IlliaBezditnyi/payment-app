@@ -42,3 +42,8 @@ export interface PaymentStatusContentProps {
   title: string;
   description: string;
 }
+
+export interface TransactionModalProps {
+  isVisible: boolean;
+  onBackdropPress: () => void;
+}

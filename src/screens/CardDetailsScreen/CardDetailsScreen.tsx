@@ -5,6 +5,7 @@ import CustomButton from '../../components/CustomButton';
 import BottomModal from '../../components/BottomModal/BottomModal';
 import ConfirmTransferContent from '../../components/ConfirmTransferContent';
 import PaymentStatusContent from '../../components/PaymentStatusContent';
+// import TransactionModal from '../../components/TransactionModal';
 import {useForm} from 'react-hook-form';
 import {
   cardNumberFormatter,
@@ -21,8 +22,9 @@ const CardDetailsScreen: FC = () => {
   });
 
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [isPaymentButtonPress, setIsPaymentButtonPress] = useState<boolean>(false);
+  const [isPayButtonPress, setIsPayButtonPress] = useState<boolean>(false);
   const [paymentSuccess, setPaymentSuccess] = useState<boolean>(true);
+  // const [isTransactionModal, setIsTransactionModal] = useState<boolean>(true);
 
   const onContinueButtonPress = useCallback((data: any) => {
     setIsOpenModal(true);
@@ -31,15 +33,15 @@ const CardDetailsScreen: FC = () => {
 
   const onModalClose = useCallback(() => {
     setIsOpenModal(false);
-    setIsPaymentButtonPress(false);
+    setIsPayButtonPress(false);
     Keyboard.dismiss()
   }, [])
 
   const onPaySubmit = () => {
     setIsOpenModal(false);
-    setIsPaymentButtonPress(true);
+    setIsPayButtonPress(true);
+    Keyboard.dismiss()
   }
-
 
   const snapPointModal = ["60%"];
   const snapPointPayment = ["35"];
@@ -50,7 +52,7 @@ const CardDetailsScreen: FC = () => {
     <TouchableWithoutFeedback onPress={() => onModalClose()}>
       <View style={{flex: 1}}>
         <View style={
-          [styles.root, {opacity: isOpenModal || isPaymentButtonPress ? 0.1 : 1, backgroundColor: isOpenModal || isPaymentButtonPress ? 'grey' : '#f7f6f2' }]
+          [styles.root, {opacity: isOpenModal || isPayButtonPress ? 0.1 : 1, backgroundColor: isOpenModal || isPayButtonPress ? 'grey' : '#f7f6f2' }]
         }>
           <View style={styles.inputs}>
 
@@ -121,7 +123,7 @@ const CardDetailsScreen: FC = () => {
           </BottomModal>
         }
 
-        {isPaymentButtonPress &&
+        {isPayButtonPress &&
           <BottomModal snapPoint={snapPointPayment} onCloseModal={onModalClose}>
             <View style={{paddingHorizontal: 15, paddingTop: 20}}>
               <PaymentStatusContent
@@ -137,6 +139,8 @@ const CardDetailsScreen: FC = () => {
             </View>
           </BottomModal>
         }
+
+        {/* <TransactionModal isVisible={isTransactionModal} onBackdropPress={() => setIsTransactionModal(false)} /> */}
       </View>
     </TouchableWithoutFeedback>
   )
