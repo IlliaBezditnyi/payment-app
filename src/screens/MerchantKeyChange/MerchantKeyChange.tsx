@@ -2,17 +2,17 @@ import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {Image, Keyboard, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import CustomInput from "../../components/CustomInput";
 import {useForm} from 'react-hook-form';
-import BottomSheet, {BottomSheetFlatList, BottomSheetScrollView, BottomSheetView} from "@gorhom/bottom-sheet";
+import BottomSheet, {BottomSheetScrollView} from "@gorhom/bottom-sheet";
+
+const data = ['sk1_rfQtfYrw0FSsmh7vP8TKhxY6sk_rfQtfYrw0FSsmh7vP8TKhxY6IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2', 'sk2_rfQtfYrw0FSsmh7vP8TKhxY6IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2', 'sk3_rfQtfYrw0FSsmh7vP8TKhxYll6IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2']
 
 const MerchantKeyChange = () => {
 
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [keyValue, setKeyValue] = useState<string>(data[0])
-    const [newKeyValue, setNewKeyValue] = useState<string>('')
 
     const keySelected = (item: string) => {
         setKeyValue(item)
-        setNewKeyValue('')
         handleClosePress()
     }
 
@@ -23,9 +23,9 @@ const MerchantKeyChange = () => {
         mode: 'onChange'
     });
 
-//---modal---
+//-------modal---
     const sheetRef = useRef<BottomSheet>(null);
-    const snapPoints = useMemo(() => ["70%", "70%", "70%"], []);
+    const snapPoints = useMemo(() => ["40%", "50%", "70%"], []);
 
     const handleSnapPress = useCallback((index: any) => {
         sheetRef.current?.snapToIndex(index);
@@ -38,6 +38,7 @@ const MerchantKeyChange = () => {
         Keyboard.dismiss()
         setIsOpenModal(false)
     }, []);
+//----------------
 
     const handlePressSubmit = () => {
         control._formValues.newKey ? console.log('manually key', control._formValues.newKey) : console.log('key', keyValue)
@@ -113,7 +114,7 @@ const MerchantKeyChange = () => {
                 </View>
                 <BottomSheet
                     ref={sheetRef}
-                    index={1}
+                    index={-1}
                     snapPoints={snapPoints}
                     // onChange={handleSheetChange}
                 >
@@ -238,8 +239,5 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
-
-const data = ['sk1_rfQtfYrw0FSsmh7vP8TKhxY6sk_rfQtfYrw0FSsmh7vP8TKhxY6IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2', 'sk2_rfQtfYrw0FSsmh7vP8TKhxY6IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2', 'sk3_rfQtfYrw0FSsmh7vP8TKhxYll6IN25Dz1d7I2BTUZROibUcSVlwgEDdRTRhHGQgHZ2']
-
 
 export default MerchantKeyChange;

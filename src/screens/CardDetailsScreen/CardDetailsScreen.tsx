@@ -32,6 +32,7 @@ const CardDetailsScreen: FC = () => {
   const onModalClose = useCallback(() => {
     setIsOpenModal(false);
     setIsPaymentButtonPress(false);
+    Keyboard.dismiss()
   }, [])
 
   const onPaySubmit = () => {
@@ -39,13 +40,14 @@ const CardDetailsScreen: FC = () => {
     setIsPaymentButtonPress(true);
   }
 
-  const snapPointModal = ["55%"];
+
+  const snapPointModal = ["60%"];
   const snapPointPayment = ["35"];
 
   const cardNumberValue = watch("cardNumber");
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback onPress={() => onModalClose()}>
       <View style={{flex: 1}}>
         <View style={
           [styles.root, {opacity: isOpenModal || isPaymentButtonPress ? 0.1 : 1, backgroundColor: isOpenModal || isPaymentButtonPress ? 'grey' : '#f7f6f2' }]

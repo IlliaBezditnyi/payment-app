@@ -33,6 +33,7 @@ const AddAmountScreen: FC = () => {
 
   const onModalClose = useCallback(() => {
     setIsOpenModal(false);
+    Keyboard.dismiss()
   }, [])
 
   const cardPaymentSelected = () => {
@@ -50,7 +51,7 @@ const AddAmountScreen: FC = () => {
   const amountValue = watch("amount");
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    <TouchableWithoutFeedback onPress={() => onModalClose()}>
       <View style={{flex: 1}}>
         <View style={[styles.root, {opacity: isOpenModal ? 0.1 : 1, backgroundColor: isOpenModal ? 'grey' : '#f7f6f2' }]}>
           <View style={styles.inputs}>
