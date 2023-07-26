@@ -5,6 +5,7 @@ import AddAmountScreen from '../screens/AddAmountScreen';
 import CardDetailsScreen from '../screens/CardDetailsScreen';
 import MerchantKeyChange from '../screens/MerchantKeyChange';
 import StartMenuScreen from '../screens/StartMenuScreen';
+import AuthCodeScreen from "../screens/AuthCodeScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,11 @@ const Navigation: FC = () => {
           component={StartMenuScreen}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="AuthCode"
+          component={AuthCodeScreen}
+          options={{title: 'Auth Code', headerTitleStyle: {fontSize: 16, fontWeight: "500"}}}
+      />
         <Stack.Screen
           name="AddAmount"
           component={AddAmountScreen}

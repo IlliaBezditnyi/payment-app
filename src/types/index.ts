@@ -1,6 +1,7 @@
 export interface CustomButtonProps {
   title: string;
   onPress: any;
+  disabled?: boolean;
 }
 
 export interface CustomInputProps {

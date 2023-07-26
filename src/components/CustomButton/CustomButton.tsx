@@ -2,9 +2,21 @@ import {Pressable, StyleSheet, Text} from 'react-native';
 import React, {FC} from 'react';
 import {CustomButtonProps} from '../../types';
 
-const CustomButton: FC<CustomButtonProps> = ({title, onPress}) => {
+const CustomButton: FC<CustomButtonProps> = ({title, onPress, disabled}) => {
   return (
-    <Pressable style={styles.button} onPress={onPress}>
+    <Pressable
+        disabled={disabled}
+        style={({ pressed }) => [
+          {
+            backgroundColor:
+                disabled? '#8b8888' :
+                pressed
+                ? '#575454'
+                : '#212121'
+          },
+          styles.button
+        ]}
+        onPress={onPress}>
       <Text style={styles.text}>{title}</Text>
     </Pressable>
   );
@@ -12,7 +24,6 @@ const CustomButton: FC<CustomButtonProps> = ({title, onPress}) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#212121',
     width: '100%',
     padding: 15,
     alignItems: 'center',
